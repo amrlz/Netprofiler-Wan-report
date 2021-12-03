@@ -41,27 +41,27 @@ for i in data:# looping line by line - i will be the IP
     csv_file.write(today)
     csv_file.write("\n")
     payload = {"criteria":{"time_frame":{"start":start,"end": end,"resolution":"hour"},"query":{"realm":"traffic_summary","host_group_type": "ByLocation","group_by":"hop","group_dev_iface": i, "limit":999999, "sort_column":30,"columns":[9,13,30,31,25,27]}},"template_id":184} # the actual template we use to post
-    url = requests.post('https://10.65.170.112/api/profiler/1.11/reporting/reports.json',verify=False, auth=HTTPBasicAuth("admin", "admin"), json=payload) # initial API to post the report
+    url = requests.post('https://localhost/api/profiler/1.11/reporting/reports.json',verify=False, auth=HTTPBasicAuth("admin", "admin"), json=payload) # initial API to post the report
     data = url.json()
     for k,v in data.items(): #loop trough reponse
         if k =='id': # retrieve id of the report
-            url = requests.get('https://10.65.170.112/api/profiler/1.11/reporting/reports/'+ str(v) + '.json',verify=False, auth=HTTPBasicAuth("admin", "admin")) # API to check status of the report
+            url = requests.get('https://localhost/api/profiler/1.11/reporting/reports/'+ str(v) + '.json',verify=False, auth=HTTPBasicAuth("admin", "admin")) # API to check status of the report
             data = url.json()
             for a,b in data.items():#loop trough reponse
                 if a == 'percent': 
                     while b < 100:# check percentage of the report -- if not 100% then  loop trough the API until b is equal to 100
-                        url = requests.get('https://10.65.170.112/api/profiler/1.11/reporting/reports/'+ str(v) + '.json',verify=False, auth=HTTPBasicAuth("admin", "admin"))
+                        url = requests.get('https://localhost/api/profiler/1.11/reporting/reports/'+ str(v) + '.json',verify=False, auth=HTTPBasicAuth("admin", "admin"))
                         data = url.json()
                         #print(data)
                         for c,d in data.items():
                             if c == 'percent':
                                 b = d # update variable b which will be the percentage of the report. and repeat the process until b is equal 100
                                 #print('fetching report for',i,b)
-                    url = requests.get('https://10.65.170.112/api/profiler/1.11/reporting/reports/'+ str(v) + '/queries.json',verify=False, auth=HTTPBasicAuth("admin", "admin")) # API to check status of the report
+                    url = requests.get('https://localhost/api/profiler/1.11/reporting/reports/'+ str(v) + '/queries.json',verify=False, auth=HTTPBasicAuth("admin", "admin")) # API to check status of the report
                     data = url.json()
                     for a in data:#loop trough reponse
                         a = a['id']
-                        url = requests.get('https://10.65.170.112/api/profiler/1.11/reporting/reports/'+ str(v) +'/queries/' + a + '.json?limit=999999&columns=9,13,30,31,25,27', verify=False, auth=HTTPBasicAuth("admin", "admin"))
+                        url = requests.get('https://localhost/api/profiler/1.11/reporting/reports/'+ str(v) +'/queries/' + a + '.json?limit=999999&columns=9,13,30,31,25,27', verify=False, auth=HTTPBasicAuth("admin", "admin"))
                         data = url.json()
                         for k in data['data']:
                             k = ','.join(k)
